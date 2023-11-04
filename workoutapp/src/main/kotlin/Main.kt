@@ -1,3 +1,5 @@
+package ru.teterin.kotlincurse.workoutapp
+
 fun main(args: Array<String>) {
     println("Hello World!")
 
