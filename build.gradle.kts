@@ -2,8 +2,8 @@ plugins {
     kotlin("jvm") apply false
 }
 
-group = "ru.teterin.kotlincurse"
-version = "1.0-SNAPSHOT"
+group = "ru.teterin.rentalapp"
+version = "1.0.0"
 
 repositories {
     mavenCentral()
@@ -12,8 +12,11 @@ repositories {
 subprojects {
     group = rootProject.group
     version = rootProject.version
-
     repositories {
         mavenCentral()
+    }
+
+    tasks.withType<KotlinCompile> {
+        kotlinOptions.jvmTarget = "17"
     }
 }
