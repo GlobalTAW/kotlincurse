@@ -1,0 +1,489 @@
+openapi: 3.0.3
+info:
+  title: "Rental app"
+  description: Место, где тот кто хочет что то сдать в аренду и тот кто хочет что то снять в аренду находят друг друга
+  license:
+    name: Apache 2.0
+    url: https://www.apache.org/licenses/LICENSE-2.0.html
+  version: 1.0.0
+servers:
+  - url: http://localhost:8080/v1
+tags:
+  - name: ad
+    description: Объявление о сдаче в аренду
+paths:
+  /ad/create:
+    post:
+      tags:
+        - ad
+      summary: Create ad
+      operationId: adCreate
+      requestBody:
+        description: Request body
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AdCreateRequest'
+        required: true
+      responses:
+        200:
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AdCreateResponse'
+  /ad/read:
+    post:
+      tags:
+        - ad
+      summary: Read ad
+      operationId: adRead
+      requestBody:
+        description: Request body
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AdReadRequest'
+        required: true
+      responses:
+        200:
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AdReadResponse'
+  /ad/update:
+    post:
+      tags:
+        - ad
+      summary: Update ad
+      operationId: adUpdate
+      requestBody:
+        description: Request body
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AdUpdateRequest'
+        required: true
+      responses:
+        200:
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AdUpdateResponse'
+  /ad/delete:
+    post:
+      tags:
+        - ad
+      summary: Delete ad
+      operationId: adDelete
+      requestBody:
+        description: Request body
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AdDeleteRequest'
+        required: true
+      responses:
+        200:
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AdDeleteResponse'
+  /ad/search:
+    post:
+      tags:
+        - ad
+      summary: Search ad
+      operationId: adSearch
+      requestBody:
+        description: Request body
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AdSearchRequest'
+        required: true
+      responses:
+        200:
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AdSearchResponse'
+  /ad/book:
+    post:
+      tags:
+        - ad
+      summary: Booking ad
+      operationId: adBook
+      requestBody:
+        description: Request body
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AdBookRequest'
+        required: true
+      responses:
+        200:
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AdBookResponse'
+
+components:
+  schemas:
+
+    IRequest:
+      type: object
+      description: Базовый интерфейс для всех запросов
+      properties:
+        requestType:
+          type: string
+          description: Поле-дескриминатор для вычисления типа запроса
+          example: create
+        requestId:
+          type: string
+          description: Идентификатор запроса для отладки
+          example: 836c565f-2f02-4389-b6be-14c5dbb6481f
+      discriminator:
+        propertyName: requestType
+        mapping:
+          create: '#/components/schemas/AdCreateRequest'
+          read:   '#/components/schemas/AdReadRequest'
+          update: '#/components/schemas/AdUpdateRequest'
+          delete: '#/components/schemas/AdDeleteRequest'
+          search: '#/components/schemas/AdSearchRequest'
+          book:   '#/components/schemas/AdBookRequest'
+
+    Error:
+      type: object
+      properties:
+        code:
+          type: string
+        group:
+          type: string
+        field:
+          type: string
+        message:
+          type: string
+
+    ResponseResult:
+      type: string
+      enum:
+        - success
+        - error
+
+    IResponse:
+      type: object
+      description: Базовый интерфейс для всех ответов
+      properties:
+        responseType:
+          type: string
+          description: Поле-дескриминатор для вычисления типа запроса
+          example: create
+        requestId:
+          type: string
+          description: Идентификатор запроса для отладки
+          example: 836c565f-2f02-4389-b6be-14c5dbb6481f
+        result:
+          $ref: '#/components/schemas/ResponseResult'
+        errors:
+          type: array
+          items:
+            $ref: '#/components/schemas/Error'
+      discriminator:
+        propertyName: responseType
+        mapping:
+          create: '#/components/schemas/AdCreateResponse'
+          read:   '#/components/schemas/AdReadResponse'
+          update: '#/components/schemas/AdUpdateResponse'
+          delete: '#/components/schemas/AdDeleteResponse'
+          search: '#/components/schemas/AdSearchResponse'
+          book:   '#/components/schemas/AdBookResponse'
+
+    UserId:
+      type: string
+      description: Идентификатор пользователя
+      example: 41be5bb5-07b5-4e0d-b9e0-fb4b2b1af7f0
+    AdId:
+      type: string
+      description: Идентификатор объявления
+      example: ed269e8e-ec3a-4620-835f-2e8fdd74d323
+    AdLock:
+      type: string
+      description: Версия оптимистичной блокировки
+
+    BaseAd:
+      type: object
+      description: Объект описывает свойства для объявления
+      properties:
+        title:
+          type: string
+          description: Заголовок объявления
+          example: Прокат Сап борда
+        description:
+          type: string
+          description: Описание объявления
+          example: Прокат Сап борда Exegol Dino 3.2х0.8 м. В будние дни 700 рублей в выходные 1000 за сутки.
+        timeParam:
+          $ref: '#/components/schemas/TimeParam'
+        visibility:
+          $ref: '#/components/schemas/AdVisibility'
+
+    TimeParam:
+      type: object
+      description: 'Данные о дате аренды и времени передачи в аренду'
+      properties:
+        rentDates:
+          description: 'Даты доступные или выбранные для проката в формате YYYY-MM-DD'
+          type: array
+          xml:
+            wrapped: true
+          items:
+            type: string
+          example: [2024-06-20, 2024-06-21]
+        issueTimes:
+          type: array
+          description: 'Время выдачи имущества в прокат в unixTime'
+          xml:
+            wrapped: true
+          items:
+            type: string
+            example: [1718895600, 1718982000]
+
+    AdVisibility:
+      type: string
+      description: 'Тип видимости объявления. Возможные значения: видит только владелец, только зарегистрированный в системе пользователь, видимо всем'
+      enum:
+        - ownerOnly
+        - groupOnly
+        - public
+
+    AdCreateObject:
+      description: Объект для создания объявления
+      allOf:
+        - $ref: '#/components/schemas/BaseAd'
+
+    AdCreateRequest:
+      allOf:
+        - $ref: '#/components/schemas/IRequest'
+        - $ref: '#/components/schemas/AdRequestDebug'
+        - type: object
+          properties:
+            ad:
+              $ref: '#/components/schemas/AdCreateObject'
+
+    AdReadObject:
+      description: Объект для редактирования объявления
+      allOf:
+        - type: object
+          properties:
+            id:
+              $ref: '#/components/schemas/AdId'
+
+    AdReadRequest:
+      allOf:
+        - $ref: '#/components/schemas/IRequest'
+        - $ref: '#/components/schemas/AdRequestDebug'
+        - type: object
+          properties:
+            ad:
+              $ref: '#/components/schemas/AdReadObject'
+
+    AdUpdateObject:
+      description: Объект для редактирования объявления
+      allOf:
+        - $ref: '#/components/schemas/BaseAd'
+        - type: object
+          properties:
+            id:
+              $ref: '#/components/schemas/AdId'
+            lock:
+              $ref: '#/components/schemas/AdLock'
+
+    AdUpdateRequest:
+      allOf:
+        - $ref: '#/components/schemas/IRequest'
+        - $ref: '#/components/schemas/AdRequestDebug'
+        - type: object
+          properties:
+            ad:
+              $ref: '#/components/schemas/AdUpdateObject'
+
+    AdDeleteObject:
+      description: Объект для удаления объявления
+      allOf:
+        - type: object
+          properties:
+            id:
+              $ref: '#/components/schemas/AdId'
+            lock:
+              $ref: '#/components/schemas/AdLock'
+
+    AdDeleteRequest:
+      allOf:
+        - $ref: '#/components/schemas/IRequest'
+        - $ref: '#/components/schemas/AdRequestDebug'
+        - type: object
+          properties:
+            ad:
+              $ref: '#/components/schemas/AdDeleteObject'
+
+    AdSearchFilter:
+      type: object
+      description: Набор фильтров для поиска
+      properties:
+        searchString:
+          type: string
+          description: Поисковая строка, которая будет искаться в объявлениях
+          example: "Сап борд"
+
+    AdSearchRequest:
+      allOf:
+        - $ref: '#/components/schemas/IRequest'
+        - $ref: '#/components/schemas/AdRequestDebug'
+        - type: object
+          properties:
+            adFilter:
+              $ref: '#/components/schemas/AdSearchFilter'
+
+    AdBookObject:
+      description: Объект для бронирования объявления
+      allOf:
+        - type: object
+          properties:
+            id:
+              $ref: '#/components/schemas/AdId'
+            lock:
+              $ref: '#/components/schemas/AdLock'
+            timeParam:
+              $ref: '#/components/schemas/TimeParam'
+
+    AdBookRequest:
+      allOf:
+        - $ref: '#/components/schemas/IRequest'
+        - $ref: '#/components/schemas/AdRequestDebug'
+        - type: object
+          properties:
+            ad:
+              $ref: '#/components/schemas/AdBookObject'
+
+    AdResponseObject:
+      description: Объект ответа для объявления
+      allOf:
+        - $ref: '#/components/schemas/BaseAd'
+        - type: object
+          description: Объект, который возвращается в ответе бэкенда
+          properties:
+            id:
+              $ref: '#/components/schemas/AdId'
+            ownerId:
+              $ref: '#/components/schemas/UserId'
+            lock:
+              $ref: '#/components/schemas/AdLock'
+            permissions:
+              type: array
+              uniqueItems: true
+              items:
+                $ref: '#/components/schemas/AdPermissions'
+
+    AdPermissions:
+      type: string
+      description: Доступы для клиента для операций над объявлением
+      enum:
+        - read
+        - update
+        - delete
+        - book
+        - makeVisiblePublic
+        - makeVisibleOwn
+        - makeVisibleGroup
+
+    AdResponseSingle:
+      allOf:
+        - type: object
+          description: Ответ с одним объектом объявления
+          properties:
+            ad:
+              $ref: '#/components/schemas/AdResponseObject'
+
+    AdResponseMulti:
+      allOf:
+        - type: object
+          description: Список найденных объектов
+          properties:
+            ads:
+              type: array
+              items:
+                $ref: '#/components/schemas/AdResponseObject'
+
+    AdCreateResponse:
+      allOf:
+        - $ref: '#/components/schemas/IResponse'
+        - $ref: '#/components/schemas/AdResponseSingle'
+
+    AdReadResponse:
+      allOf:
+        - $ref: '#/components/schemas/IResponse'
+        - $ref: '#/components/schemas/AdResponseSingle'
+
+    AdUpdateResponse:
+      allOf:
+        - $ref: '#/components/schemas/IResponse'
+        - $ref: '#/components/schemas/AdResponseSingle'
+
+    AdDeleteResponse:
+      allOf:
+        - $ref: '#/components/schemas/IResponse'
+        - $ref: '#/components/schemas/AdResponseSingle'
+
+    AdSearchResponse:
+      allOf:
+        - $ref: '#/components/schemas/IResponse'
+        - $ref: '#/components/schemas/AdResponseMulti'
+
+    AdBookResponse:
+      description: Результат бронирования по объявлению
+      allOf:
+        - $ref: '#/components/schemas/IResponse'
+        - $ref: '#/components/schemas/AdResponseSingle'
+
+    # STUBS ======================
+    AdRequestDebugMode:
+      type: string
+      description: Перечисление режимов
+      enum:
+        - prod
+        - test
+        - stub
+
+    AdRequestDebug:
+      type: object
+      properties:
+        debug:
+          $ref: '#/components/schemas/AdDebug'
+
+    AdDebug:
+      type: object
+      description: Данные по объявлению для отладки
+      properties:
+        mode:
+          $ref: '#/components/schemas/AdRequestDebugMode'
+        stub:
+          $ref: '#/components/schemas/AdRequestDebugStubs'
+
+    AdRequestDebugStubs:
+      type: string
+      description: Перечисления всех стабов
+      enum:
+        - success
+        - notFound
+        - badId
+        - badTitle
+        - badDescription
+        - badVisibility
+        - cannotDelete
+        - badSearchString
