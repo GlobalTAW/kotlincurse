@@ -252,7 +252,7 @@ components:
             wrapped: true
           items:
             type: string
-            example: [1718895600, 1718982000]
+          example: [1718895600, 1718982000]
 
     AdVisibility:
       type: string
