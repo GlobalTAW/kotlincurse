@@ -10,5 +10,6 @@ dependencies {
     implementation(kotlin("stdlib-common"))
 
     api("org.jetbrains.kotlinx:kotlinx-datetime:$datetimeVersion")
+    api(project(":rental-app-lib-logging"))
     testImplementation(kotlin("test-junit"))
 }

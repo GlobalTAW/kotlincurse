@@ -25,6 +25,7 @@ dependencies {
     implementation(project(":rental-app-api-v1"))
     implementation(project(":rental-app-mappers-v1"))
     implementation(project(":rental-app-biz"))
+    implementation(project(":rental-app-common"))
 
     testImplementation(kotlin("test-junit"))
 }

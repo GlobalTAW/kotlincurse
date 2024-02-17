@@ -17,42 +17,42 @@ fun RentalContext.toTransportAd(): IResponse = when (val cmd = command) {
 
 fun RentalContext.toTransportCreate() = AdCreateResponse(
     requestId = this.requestId.asString().takeIf { it.isNotBlank() },
-    result = if (state == RentalState.RUNNING) ResponseResult.SUCCESS else ResponseResult.ERROR,
+    result = state.toResult(),
     errors = errors.toTransportErrors(),
     ad = adResponse.toTransportAd()
 )
 
 fun RentalContext.toTransportRead() = AdReadResponse(
     requestId = this.requestId.asString().takeIf { it.isNotBlank() },
-    result = if (state == RentalState.RUNNING) ResponseResult.SUCCESS else ResponseResult.ERROR,
+    result = state.toResult(),
     errors = errors.toTransportErrors(),
     ad = adResponse.toTransportAd()
 )
 
 fun RentalContext.toTransportUpdate() = AdUpdateResponse(
     requestId = this.requestId.asString().takeIf { it.isNotBlank() },
-    result = if (state == RentalState.RUNNING) ResponseResult.SUCCESS else ResponseResult.ERROR,
+    result = state.toResult(),
     errors = errors.toTransportErrors(),
     ad = adResponse.toTransportAd()
 )
 
 fun RentalContext.toTransportDelete() = AdDeleteResponse(
     requestId = this.requestId.asString().takeIf { it.isNotBlank() },
-    result = if (state == RentalState.RUNNING) ResponseResult.SUCCESS else ResponseResult.ERROR,
+    result = state.toResult(),
     errors = errors.toTransportErrors(),
     ad = adResponse.toTransportAd()
 )
 
 fun RentalContext.toTransportSearch() = AdSearchResponse(
     requestId = this.requestId.asString().takeIf { it.isNotBlank() },
-    result = if (state == RentalState.RUNNING) ResponseResult.SUCCESS else ResponseResult.ERROR,
+    result = state.toResult(),
     errors = errors.toTransportErrors(),
     ads = adsResponse.toTransportAds()
 )
 
 fun RentalContext.toTransportBook() = AdBookResponse(
     requestId = this.requestId.asString().takeIf { it.isNotBlank() },
-    result = if (state == RentalState.RUNNING) ResponseResult.SUCCESS else ResponseResult.ERROR,
+    result = state.toResult(),
     errors = errors.toTransportErrors(),
     ad = adResponse.toTransportAd()
 )
@@ -68,6 +68,7 @@ private fun RentalAd.toTransportAd(): AdResponseObject = AdResponseObject(
     description = description.takeIf { it.isNotBlank() },
     ownerId = ownerId.takeIf { it != RentalUserId.NONE }?.asString(),
     visibility = visibility.toTransportAd(),
+    productId = productId.takeIf { it != RentalProductId.NONE }?.asString(),
     permissions = permissionsClient.toTransportAd(),
 )
 
@@ -104,3 +105,10 @@ private fun RentalError.toTransportAd() = Error(
     field = field.takeIf { it.isNotBlank() },
     message = message.takeIf { it.isNotBlank() },
 )
+
+private fun RentalState.toResult(): ResponseResult? = when (this) {
+    RentalState.RUNNING -> ResponseResult.SUCCESS
+    RentalState.FAILING -> ResponseResult.ERROR
+    RentalState.FINISHING -> ResponseResult.SUCCESS
+    RentalState.NONE -> null
+}

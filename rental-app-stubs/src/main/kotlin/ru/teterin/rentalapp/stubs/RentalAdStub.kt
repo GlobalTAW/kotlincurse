@@ -7,4 +7,11 @@ object RentalAdStub {
 
     fun get(): RentalAd = AD_SUP1.copy()
 
+    fun prepareResult(block: RentalAd.() -> Unit): RentalAd = get().apply(block)
+
+    fun prepareSearchResult(filter: String) = listOf(
+        get(),
+        get(),
+    )
+
 }

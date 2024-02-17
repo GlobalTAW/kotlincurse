@@ -10,4 +10,9 @@ data class RentalAd(
     var visibility: RentalVisibility = RentalVisibility.NONE,
     var productId: RentalProductId = RentalProductId.NONE,
     val permissionsClient: MutableSet<RentalAdPermissionClient> = mutableSetOf()
-)
+) {
+    fun deepCopy(): RentalAd = copy(
+        permissionsClient = permissionsClient.toMutableSet()
+    )
+
+}

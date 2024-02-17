@@ -215,6 +215,9 @@ components:
     AdLock:
       type: string
       description: Версия оптимистичной блокировки
+    ProductId:
+      type: string
+      description: Идентификатор модели продукта, к которому относится объявление
 
     BaseAd:
       type: object
@@ -232,6 +235,8 @@ components:
           $ref: '#/components/schemas/TimeParam'
         visibility:
           $ref: '#/components/schemas/AdVisibility'
+        productId:
+          $ref: '#/components/schemas/ProductId'
 
     TimeParam:
       type: object

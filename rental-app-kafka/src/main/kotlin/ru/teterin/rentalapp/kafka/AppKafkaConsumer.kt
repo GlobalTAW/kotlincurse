@@ -5,15 +5,15 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.NonCancellable
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withContext
-import kotlinx.datetime.Clock
 import mu.KotlinLogging
 import org.apache.kafka.clients.consumer.Consumer
 import org.apache.kafka.clients.consumer.ConsumerRecord
 import org.apache.kafka.clients.consumer.ConsumerRecords
+import org.apache.kafka.clients.consumer.KafkaConsumer
 import org.apache.kafka.clients.producer.Producer
 import org.apache.kafka.clients.producer.ProducerRecord
 import org.apache.kafka.common.errors.WakeupException
-import ru.teterin.rentalapp.biz.RentalAdProcessor
+import ru.teterin.rentalapp.common.controllerHelper
 import ru.teterin.rentalapp.kafka.config.AppKafkaConfig
 import ru.teterin.rentalapp.model.RentalContext
 import java.time.*
@@ -32,7 +32,6 @@ interface ConsumerStrategy {
 class AppKafkaConsumer(
     private val config: AppKafkaConfig,
     consumerStrategies: List<ConsumerStrategy>,
-    private val processor: RentalAdProcessor = RentalAdProcessor(),
     private val consumer: Consumer<String, String> = config.createKafkaConsumer(),
     private val producer: Producer<String, String> = config.createKafkaProducer()
 ) {
@@ -54,16 +53,16 @@ class AppKafkaConsumer(
                 }
                 records.forEach { record: ConsumerRecord<String, String> ->
                     try {
-                        val ctx = RentalContext(
-                            timeStart = Clock.System.now()
+                        val (_, outputTopic, strategy) = topicsAndStrategyByInputTopic[record.topic()]
+                            ?: throw RuntimeException("Receive message from unknown topic ${record.topic()}")
+
+                        val resp = config.controllerHelper(
+                            { strategy.deserialize(record.value(), this) },
+                            { strategy.serialize(this) },
+                            KafkaConsumer::class,
+                            "kafka-consumer",
                         )
-                        log.info { "process ${record.key()} from ${record.topic()}:\n${record.value()}" }
-                        val (_, outputTopic, strategy) = topicsAndStrategyByInputTopic[record.topic()] ?: throw RuntimeException("Receive message from unknown topic ${record.topic()}")
-
-                        strategy.deserialize(record.value(), ctx)
-                        processor.exec(ctx)
-
-                        sendResponse(ctx, strategy, outputTopic)
+                        sendResponse(resp, outputTopic)
                     } catch (ex: Exception) {
                         log.error(ex) { "error" }
                     }
@@ -82,8 +81,7 @@ class AppKafkaConsumer(
         }
     }
 
-    private fun sendResponse(context: RentalContext, strategy: ConsumerStrategy, outputTopic: String) {
-        val json = strategy.serialize(context)
+    private fun sendResponse(json: String, outputTopic: String) {
         val resRecord = ProducerRecord(
             outputTopic,
             UUID.randomUUID().toString(),

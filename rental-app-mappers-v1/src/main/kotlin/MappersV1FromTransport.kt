@@ -21,6 +21,7 @@ fun RentalContext.fromTransport(request: IRequest) = when (request) {
 private fun String?.toAdId() = this?.let { RentalAdId(it) } ?: RentalAdId.NONE
 private fun String?.toAdWithId() = RentalAd(id = this.toAdId())
 private fun IRequest?.requestId() = this?.requestId?.let { RentalRequestId(it) } ?: RentalRequestId.NONE
+private fun String?.toProductId() = this?.let { RentalProductId(it) } ?: RentalProductId.NONE
 
 private fun AdDebug?.transportToWorkMode(): RentalWorkMode = when (this?.mode) {
     AdRequestDebugMode.PROD -> RentalWorkMode.PROD
@@ -101,6 +102,7 @@ private fun AdCreateObject.toInternal(): RentalAd = RentalAd(
         issueTimes = this.timeParam.issueTimes()
     ),
     visibility = this.visibility.fromTransport(),
+    productId = this.productId.toProductId(),
 )
 
 private fun AdUpdateObject.toInternal(): RentalAd = RentalAd(
@@ -112,6 +114,7 @@ private fun AdUpdateObject.toInternal(): RentalAd = RentalAd(
         issueTimes = this.timeParam.issueTimes()
     ),
     visibility = this.visibility.fromTransport(),
+    productId = this.productId.toProductId(),
 )
 
 private fun TimeParam?.rentDates() = this?.rentDates?.let { rentDatesToLocalDate(it) } ?: arrayListOf()

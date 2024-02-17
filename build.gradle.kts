@@ -1,14 +1,22 @@
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
+import org.jetbrains.kotlin.gradle.tasks.KotlinJvmCompile
 
 plugins {
     kotlin("jvm") apply false
+    kotlin("multiplatform") apply false
 }
+
+val JVM_TARGET = "17"
 
 group = "ru.teterin.rentalapp"
 version = "1.0.0"
 
-repositories {
-    mavenCentral()
+allprojects {
+    repositories {
+        google()
+        mavenCentral()
+        maven { url = uri("https://jitpack.io")}
+    }
 }
 
 subprojects {
@@ -19,6 +27,10 @@ subprojects {
     }
 
     tasks.withType<KotlinCompile> {
-        kotlinOptions.jvmTarget = "17"
+        kotlinOptions.jvmTarget = JVM_TARGET
     }
+    tasks.withType<KotlinJvmCompile> {
+        kotlinOptions.jvmTarget = JVM_TARGET
+    }
+
 }
