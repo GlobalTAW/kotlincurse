@@ -10,6 +10,7 @@ dependencies {
     implementation(kotlin("stdlib-common"))
     implementation(project(":rental-app-model"))
     implementation(project(":rental-app-stubs"))
+    implementation(project(":ok-marketplace-lib-cor"))
 
     implementation(kotlin("stdlib-jdk8"))
     implementation(kotlin("test-junit"))

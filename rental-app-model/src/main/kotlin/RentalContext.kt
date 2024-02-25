@@ -8,6 +8,7 @@ data class RentalContext(
     var command: RentalCommand = RentalCommand.NONE,
     var state: RentalState = RentalState.NONE,
     val errors: MutableList<RentalError> = mutableListOf(),
+    var corSettings: RentalCorSettings = RentalCorSettings(),
 
     var workMode: RentalWorkMode = RentalWorkMode.PROD,
     var stubCase: RentalStubs = RentalStubs.NONE,
@@ -16,6 +17,13 @@ data class RentalContext(
     var timeStart: Instant = Instant.NONE,
     var adRequest: RentalAd = RentalAd(),
     var adFilterRequest: RentalAdFilter = RentalAdFilter(),
+
+    var adValidating: RentalAd = RentalAd(),
+    var adFilterValidating: RentalAdFilter = RentalAdFilter(),
+
+    var adValidated: RentalAd = RentalAd(),
+    var adFilterValidated: RentalAdFilter = RentalAdFilter(),
+
     var adResponse: RentalAd = RentalAd(),
     var adsResponse: MutableList<RentalAd> = mutableListOf(),
 )
