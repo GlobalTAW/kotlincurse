@@ -1,5 +1,11 @@
 package ru.teterin.rentalapp.model.models
 
-enum class RentalAdLock {
-    NONE,
+@JvmInline
+value class RentalAdLock(private val id: String) {
+    fun asString() = id
+
+    companion object {
+        val NONE = RentalAdLock("")
+    }
+
 }

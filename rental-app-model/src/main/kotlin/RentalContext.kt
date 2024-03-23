@@ -2,6 +2,7 @@ package ru.teterin.rentalapp.model
 
 import kotlinx.datetime.Instant
 import ru.teterin.rentalapp.model.models.*
+import ru.teterin.rentalapp.model.repo.IAdRepository
 import ru.teterin.rentalapp.model.stubs.RentalStubs
 
 data class RentalContext(
@@ -12,6 +13,12 @@ data class RentalContext(
 
     var workMode: RentalWorkMode = RentalWorkMode.PROD,
     var stubCase: RentalStubs = RentalStubs.NONE,
+
+    var adRepo: IAdRepository = IAdRepository.NONE,
+    var adRepoRead: RentalAd = RentalAd(),
+    var adRepoPrepare: RentalAd = RentalAd(),
+    var adRepoDone: RentalAd = RentalAd(),
+    var adsRepoDone: MutableList<RentalAd> = mutableListOf(),
 
     var requestId: RentalRequestId = RentalRequestId.NONE,
     var timeStart: Instant = Instant.NONE,

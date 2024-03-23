@@ -12,6 +12,9 @@ dependencies {
     implementation(project(":rental-app-stubs"))
     implementation(project(":ok-marketplace-lib-cor"))
 
+    implementation(project(":rental-app-repo-tests"))
+    implementation(project(":rental-app-repo-stubs"))
+
     implementation(kotlin("stdlib-jdk8"))
     implementation(kotlin("test-junit"))
 }

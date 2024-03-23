@@ -9,7 +9,7 @@ fun ICorChainDsl<RentalContext>.finishAdValidation(title: String) = worker {
     this.title = title
     on { state == RentalState.RUNNING }
     handle {
-        adValidated = adValidating
+        adValidated = adValidating.deepCopy()
     }
 }
 

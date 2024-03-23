@@ -7,6 +7,7 @@ import kotlinx.datetime.LocalDate
 import ru.teterin.rentalapp.biz.RentalAdProcessor
 import ru.teterin.rentalapp.model.RentalContext
 import ru.teterin.rentalapp.model.models.RentalAd
+import ru.teterin.rentalapp.model.models.RentalAdLock
 import ru.teterin.rentalapp.model.models.RentalCommand
 import ru.teterin.rentalapp.model.models.RentalState.FAILING
 import ru.teterin.rentalapp.model.models.RentalState.NONE
@@ -35,6 +36,7 @@ fun validationDescriptionCorrect(command: RentalCommand, processor: RentalAdProc
                 issueTimes = listOf(Instant.fromEpochSeconds(1703170800))
             ),
             visibility = VISIBLE_PUBLIC,
+            lock = RentalAdLock("11111111-1111-1111-111111111111"),
         ),
     )
     processor.exec(ctx)
@@ -58,6 +60,7 @@ fun validationDescriptionTrim(command: RentalCommand, processor: RentalAdProcess
                 issueTimes = listOf(Instant.fromEpochSeconds(1703170800))
             ),
             visibility = VISIBLE_PUBLIC,
+            lock = RentalAdLock("11111111-1111-1111-111111111111"),
         ),
     )
     processor.exec(ctx)
@@ -81,6 +84,7 @@ fun validationDescriptionEmpty(command: RentalCommand, processor: RentalAdProces
                 issueTimes = listOf(Instant.fromEpochSeconds(1703170800))
             ),
             visibility = VISIBLE_PUBLIC,
+            lock = RentalAdLock("11111111-1111-1111-111111111111"),
         ),
     )
     processor.exec(ctx)
@@ -106,6 +110,7 @@ fun validationDescriptionWhiteSpace(command: RentalCommand, processor: RentalAdP
                 issueTimes = listOf(Instant.fromEpochSeconds(1703170800))
             ),
             visibility = VISIBLE_PUBLIC,
+            lock = RentalAdLock("11111111-1111-1111-111111111111"),
         ),
     )
     processor.exec(ctx)
