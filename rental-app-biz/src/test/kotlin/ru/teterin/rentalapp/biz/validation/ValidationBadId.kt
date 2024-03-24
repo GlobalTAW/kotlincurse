@@ -8,6 +8,7 @@ import ru.teterin.rentalapp.biz.RentalAdProcessor
 import ru.teterin.rentalapp.model.RentalContext
 import ru.teterin.rentalapp.model.models.RentalAd
 import ru.teterin.rentalapp.model.models.RentalAdId
+import ru.teterin.rentalapp.model.models.RentalAdLock
 import ru.teterin.rentalapp.model.models.RentalCommand
 import ru.teterin.rentalapp.model.models.RentalState
 import ru.teterin.rentalapp.model.models.RentalTimeParam
@@ -32,6 +33,7 @@ fun validationIdCorrect(command: RentalCommand, processor: RentalAdProcessor) = 
                 issueTimes = listOf(Instant.fromEpochSeconds(1703170800))
             ),
             visibility = RentalVisibility.VISIBLE_PUBLIC,
+            lock = RentalAdLock("11111111-1111-1111-111111111111"),
         ),
     )
     processor.exec(ctx)
@@ -54,6 +56,7 @@ fun validationIdEmpty(command: RentalCommand, processor: RentalAdProcessor) = ru
                 issueTimes = listOf(Instant.fromEpochSeconds(1703170800))
             ),
             visibility = RentalVisibility.VISIBLE_PUBLIC,
+            lock = RentalAdLock("11111111-1111-1111-111111111111"),
         ),
     )
     processor.exec(ctx)
@@ -79,6 +82,7 @@ fun validationIdFormat(command: RentalCommand, processor: RentalAdProcessor) = r
                 issueTimes = listOf(Instant.fromEpochSeconds(1703170800))
             ),
             visibility = RentalVisibility.VISIBLE_PUBLIC,
+            lock = RentalAdLock("11111111-1111-1111-111111111111"),
         ),
     )
     processor.exec(ctx)

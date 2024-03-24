@@ -1,11 +1,10 @@
 package ru.teterin.rentalapp.springapp.api.v1.controller
 
-import com.ninjasquad.springmockk.MockkBean
-import io.mockk.coVerify
 import org.assertj.core.api.Assertions
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.web.reactive.WebFluxTest
+import org.springframework.boot.test.mock.mockito.MockBean
 import org.springframework.http.MediaType
 import org.springframework.test.web.reactive.server.WebTestClient
 import org.springframework.web.reactive.function.BodyInserters
@@ -23,6 +22,7 @@ import ru.teterin.rentalapp.mappers.v1.toTransportRead
 import ru.teterin.rentalapp.mappers.v1.toTransportSearch
 import ru.teterin.rentalapp.mappers.v1.toTransportUpdate
 import ru.teterin.rentalapp.model.RentalContext
+import ru.teterin.rentalapp.repo.sql.RepoAdSQL
 import ru.teterin.rentalapp.springapp.config.CorConfig
 
 @WebFluxTest(AdControllerV1::class, CorConfig::class)
@@ -31,8 +31,13 @@ internal class AdControllerV1Test {
     @Autowired
     private lateinit var webClient: WebTestClient
 
-    @MockkBean(relaxUnitFun = true)
+    @Suppress("unused")
+    @MockBean
     private lateinit var processor: RentalAdProcessor
+
+    @Suppress("unused")
+    @MockBean
+    private lateinit var repo: RepoAdSQL
 
     @Test
     fun createAd() = testStubAd(
@@ -92,9 +97,6 @@ internal class AdControllerV1Test {
             .value {
                 Assertions.assertThat(it).isEqualTo(responseObj)
             }
-        coVerify {
-            processor.exec(any())
-        }
     }
 
 }

@@ -66,11 +66,18 @@ private fun RentalAd.toTransportAd(): AdResponseObject = AdResponseObject(
     id = id.takeIf { it != RentalAdId.NONE }?.asString(),
     title = title.takeIf { it.isNotBlank() },
     description = description.takeIf { it.isNotBlank() },
+    timeParam = timeParam.toTransportAd(),
     ownerId = ownerId.takeIf { it != RentalUserId.NONE }?.asString(),
     visibility = visibility.toTransportAd(),
     productId = productId.takeIf { it != RentalProductId.NONE }?.asString(),
+    lock = lock.takeIf { it != RentalAdLock.NONE }?.asString(),
     permissions = permissionsClient.toTransportAd(),
 )
+
+private fun RentalTimeParam.toTransportAd(): TimeParam = TimeParam(
+        this.rentDates.map { it.toString() },
+        this.issueTimes.map { it.epochSeconds.toString() },
+    )
 
 private fun Set<RentalAdPermissionClient>.toTransportAd(): Set<AdPermissions>? = this
     .map { it.toTransportAd() }

@@ -40,12 +40,17 @@ dependencies {
     implementation(project(":rental-app-biz"))
     implementation(project(":rental-app-lib-logging-logback"))
 
+    //repo
+    implementation(project(":rental-app-repo-postgresql"))
+    implementation(project(":rental-app-repo-in-memory"))
+    implementation(project(":rental-app-repo-stubs"))
+
     // tests
     testImplementation("org.springframework.boot:spring-boot-starter-test")
 
-    testImplementation("io.kotest:kotest-runner-junit5:$kotestVersion")
+//    testImplementation("io.kotest:kotest-runner-junit5:$kotestVersion")
+    testImplementation("org.mockito.kotlin:mockito-kotlin:5.2.1")
     testImplementation("org.springframework.boot:spring-boot-starter-webflux") // Controller, Service, etc..
-    testImplementation("com.ninja-squad:springmockk:$springmockkVersion") // mockking beans
 }
 
 tasks {

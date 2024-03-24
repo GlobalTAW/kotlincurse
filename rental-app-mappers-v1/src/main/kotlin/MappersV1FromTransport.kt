@@ -19,7 +19,7 @@ fun RentalContext.fromTransport(request: IRequest) = when (request) {
 }
 
 private fun String?.toAdId() = this?.let { RentalAdId(it) } ?: RentalAdId.NONE
-private fun String?.toAdWithId() = RentalAd(id = this.toAdId())
+private fun String?.toAdLock() = this?.let { RentalAdLock(it) } ?: RentalAdLock.NONE
 private fun IRequest?.requestId() = this?.requestId?.let { RentalRequestId(it) } ?: RentalRequestId.NONE
 private fun String?.toProductId() = this?.let { RentalProductId(it) } ?: RentalProductId.NONE
 
@@ -53,7 +53,7 @@ fun RentalContext.fromTransport(request: AdCreateRequest) {
 fun RentalContext.fromTransport(request: AdReadRequest) {
     command = RentalCommand.READ
     requestId = request.requestId()
-    adRequest = request.ad?.id.toAdWithId()
+    adRequest = request.ad.toInternal()
     workMode = request.debug.transportToWorkMode()
     stubCase = request.debug.transportToStubCase()
 }
@@ -69,7 +69,7 @@ fun RentalContext.fromTransport(request: AdUpdateRequest) {
 fun RentalContext.fromTransport(request: AdDeleteRequest) {
     command = RentalCommand.DELETE
     requestId = request.requestId()
-    adRequest = request.ad?.id.toAdWithId()
+    adRequest = request.ad.toInternal()
     workMode = request.debug.transportToWorkMode()
     stubCase = request.debug.transportToStubCase()
 }
@@ -85,9 +85,15 @@ fun RentalContext.fromTransport(request: AdSearchRequest) {
 fun RentalContext.fromTransport(request: AdBookRequest) {
     command = RentalCommand.BOOK
     requestId = request.requestId()
-    adRequest = request.ad?.id.toAdWithId()
+    adRequest = request.ad.toInternal()
     workMode = request.debug.transportToWorkMode()
     stubCase = request.debug.transportToStubCase()
+}
+
+private fun AdReadObject?.toInternal(): RentalAd = if(this != null) {
+    RentalAd(id = id.toAdId())
+} else {
+    RentalAd()
 }
 
 private fun AdSearchFilter?.toInternal(): RentalAdFilter = RentalAdFilter(
@@ -115,7 +121,30 @@ private fun AdUpdateObject.toInternal(): RentalAd = RentalAd(
     ),
     visibility = this.visibility.fromTransport(),
     productId = this.productId.toProductId(),
+    lock = lock.toAdLock(),
 )
+
+private fun AdDeleteObject?.toInternal(): RentalAd = if(this != null) {
+    RentalAd(
+        id = id.toAdId(),
+        lock = lock.toAdLock(),
+    )
+} else {
+    RentalAd()
+}
+
+private fun AdBookObject?.toInternal(): RentalAd = if(this != null) {
+    RentalAd(
+        id = id.toAdId(),
+        lock = lock.toAdLock(),
+        timeParam = RentalTimeParam(
+            rentDates = timeParam.rentDates(),
+            issueTimes = timeParam.issueTimes(),
+        )
+    )
+} else {
+    RentalAd()
+}
 
 private fun TimeParam?.rentDates() = this?.rentDates?.let { rentDatesToLocalDate(it) } ?: arrayListOf()
 private fun TimeParam?.issueTimes() = this?.issueTimes?.let { issueTimesToInstant(it) } ?: arrayListOf()

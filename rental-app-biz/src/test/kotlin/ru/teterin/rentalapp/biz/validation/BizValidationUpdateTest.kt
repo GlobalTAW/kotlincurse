@@ -2,12 +2,19 @@ package ru.teterin.rentalapp.biz.validation
 
 import org.junit.Test
 import ru.teterin.rentalapp.biz.RentalAdProcessor
+import ru.teterin.rentalapp.model.RentalCorSettings
 import ru.teterin.rentalapp.model.models.RentalCommand
+import ru.teterin.rentalapp.repo.stub.AdRepoStub
 
 class BizValidationUpdateTest {
 
     private val command = RentalCommand.UPDATE
-    private val processor by lazy { RentalAdProcessor() }
+    private val settings by lazy {
+        RentalCorSettings(
+            repoTest = AdRepoStub(),
+        )
+    }
+    private val processor by lazy { RentalAdProcessor(settings) }
 
     @Test
     fun correctId() = validationIdCorrect(command, processor)
@@ -40,5 +47,11 @@ class BizValidationUpdateTest {
     fun emptyTimeParamRentDates() = validationTimeParamRentDatesEmpty(command, processor)
     @Test
     fun emptyTimeParamIssueDates() = validationTimeParamIssueTimesEmpty(command, processor)
+
+    @Test
+    fun correctLock() = validationLockCorrect(command, processor)
+    @Test
+    fun emptyLock() = validationLockEmpty(command, processor)
+    fun badLock() = validationLockFormat(command, processor)
 
 }

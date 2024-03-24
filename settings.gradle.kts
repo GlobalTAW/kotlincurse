@@ -31,3 +31,8 @@ include("rental-app-kafka")
 include("rental-app-common")
 include("rental-app-lib-logging")
 include("rental-app-lib-logging-logback")
+
+include("rental-app-repo-in-memory")
+include("rental-app-repo-stubs")
+include("rental-app-repo-tests")
+include("rental-app-repo-postgresql")
